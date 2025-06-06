@@ -1,5 +1,3 @@
-import { ApiError } from "next/dist/server/api-utils";
-
 export const POST = async (request: Request) => {
   try {
     const body = await request.json();
