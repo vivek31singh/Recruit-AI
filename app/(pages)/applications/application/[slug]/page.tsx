@@ -24,7 +24,9 @@ interface Application {
 const Page = async ({ params }: PageProps) => {
   const { slug } = await params;
 
-  const resp = await fetch(`http://localhost:3000/api/application?id=${slug}`, {
+  const env = process.env.ENV;
+  const siteUrl = env === "production" ? process.env.SITE_URL : "http://localhost:3000";
+  const resp = await fetch(`${siteUrl}/api/application?id=${slug}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",

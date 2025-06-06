@@ -17,7 +17,9 @@ interface Application {
 }
 
 const Page = async () => {
-  const allApplicants = await fetch("http://localhost:3000/api/applications", {
+  const env = process.env.ENV;
+  const siteUrl = env === "production" ? process.env.SITE_URL : "http://localhost:3000";
+  const allApplicants = await fetch(`${siteUrl}/api/applications`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
