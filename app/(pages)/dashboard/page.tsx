@@ -175,7 +175,7 @@ ${dummyJobDescription}
     setLoading(false);
   };
   return (
-    <MainContainer className="px-5">
+    <MainContainer className="sm:px-5">
       <div className="flex flex-row items-start justify-center w-full space-x-8 overflow-x-hidden">
         <div className="w-1/2 max-w-7xl mt-24 space-y-4">
           <h2 className="text-lg font-semibold">Resume</h2>

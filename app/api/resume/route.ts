@@ -183,7 +183,7 @@ if (!newApplication) {
 
 
     return new Response(
-      JSON.stringify({ message: "Success", data: newApplication }),
+      JSON.stringify({ message: "Success", application: newApplication }),
       {
         status: 200,
         headers: {
