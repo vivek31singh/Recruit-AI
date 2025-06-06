@@ -1,3 +1,6 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 const dummyJobDescription = `Job Title: Full Stack Developer
 Location: Mohali, Punjab
 Experience Required: 3+ Years
