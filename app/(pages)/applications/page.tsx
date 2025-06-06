@@ -3,7 +3,7 @@ import { MainContainer } from "@/components/layout/main-container";
 import Link from "next/link";
 import React from "react";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Applicants",
