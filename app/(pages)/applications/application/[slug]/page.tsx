@@ -1,9 +1,9 @@
 import { Heading } from "@/components/base/Heading";
 import React from "react";
 interface PageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 interface Application {
