@@ -1,3 +1,6 @@
+import dbConnect from "@/lib/db/dbConnect";
+import { Application } from "@/lib/db/models/application";
+
 const dummyJobDescription = `Job Title: Full Stack Developer
 Location: Mohali, Punjab
 Experience Required: 3+ Years
@@ -61,6 +64,7 @@ Send your resume and portfolio to careers@example.com with the subject line: “
 
 export const POST = async (request: Request) => {
   try {
+    await dbConnect();
     const { body, subject, from, parsedResume } = await request.json();
     const openRouter_API_Key = process.env.OPENROUTER_API_KEY;
 
@@ -77,27 +81,34 @@ export const POST = async (request: Request) => {
     }
 
     const prompt = `
-You are an intelligent AI recruiter assistant at ocode technologies. You are responsible for screening candidates for a Full Stack Developer role for ocode technologies based in Mohali.
+You are an intelligent AI recruiter assistant at ocode technologies. You are responsible for screening candidates for a Full Stack Developer role in Mohali.
 
-Given the candidate’s ${from} resume and the job description, follow the steps below and respond in a professional tone:
+Given the candidate’s details below, analyze their suitability for the job role. Respond only with a valid JSON object with the following structure:
 
-1. Score the candidate’s **technical fit** for the role on a scale of 1 to 10.
-2. List the candidate’s **key strengths** in bullet points.
-3. Point out **potential weaknesses** or missing elements relevant to the job description.
-4. State clearly: **Is this candidate a good match? (Yes/No)** — base this on technical fit, experience alignment, and project relevance.
-5. Based on the evaluation above, **compose an email** to the candidate. If they are a good match, invite them for the next step (interview or screening call). If they are not a good match, politely reject them and thank them for their interest.
+{
+  "score": number, // Candidate's technical fit score from 1 to 10
+  "keyStrengths": string[], // Array of candidate's key strengths
+  "potentialWeaknesses": string[], // Array of candidate's weaknesses or missing skills
+  "goodMatch": boolean, // True if candidate is a good match, otherwise false
+  "followUpEmail": string // Polite email inviting for interview if goodMatch is true, else a rejection email thanking them
+}
 
-Use the following data:
+Candidate details:
 
----
+Subject: "${subject}"
 
-**Candidate Resume:**
-${parsedResume}
+From: "${from}"
 
----
+Email Body:
+"""${body}"""
 
-**Job Description:**
+Parsed Resume Text:
+"""${parsedResume}"""
+
+Job Description:
 ${dummyJobDescription}
+
+Analyze the candidate's resume against the job description and fill the JSON fields accordingly.
 `;
 
     const analyzedResume = await fetch(
@@ -134,8 +145,45 @@ ${dummyJobDescription}
       );
     }
 
+    if (!data.choices || data.choices.length === 0) {
+      return new Response(
+        JSON.stringify({ message: "No response from OpenRouter API" }),
+        {
+          status: 400,
+        }
+      );
+    }
+
+    const response = data.choices[0].message.content || "";
+
+    const parsedResponse = JSON.parse(response);
+
+const newApplication = await Application.create({
+  subject,
+  from,
+  body,
+  parsedResume,
+  applicationResponse: {
+    score: parsedResponse.score,
+    keyStrengths: parsedResponse.keyStrengths,
+    potentialWeaknesses: parsedResponse.potentialWeaknesses,
+    goodMatch: parsedResponse.goodMatch,
+    followUpEmail: parsedResponse.followUpEmail,
+  },
+})
+
+if (!newApplication) {
+  return new Response(
+    JSON.stringify({ message: "Error creating application" }),
+    {
+      status: 400,
+    }
+  );
+}
+
+
     return new Response(
-      JSON.stringify({ message: "Received resume data", data }),
+      JSON.stringify({ message: "Success", data: newApplication }),
       {
         status: 200,
         headers: {
