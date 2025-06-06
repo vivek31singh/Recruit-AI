@@ -6,6 +6,7 @@ if (!MONGODB_URI) {
   throw new Error('Please define the MONGODB_URI environment variable inside .env.local');
 }
 
+// eslint-disable-next-line no-var
 declare global {
   var mongoose: {
     conn: Mongoose | null;
@@ -13,7 +14,7 @@ declare global {
   };
 }
 
-// Create the cache
+
 let cached = global.mongoose;
 
 if (!cached) {
