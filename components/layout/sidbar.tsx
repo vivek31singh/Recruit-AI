@@ -10,6 +10,7 @@ import {
 import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import Image from "next/image";
 
 export function SidebarComponent({children}: {children: React.ReactNode}) {
   const links = [
@@ -66,7 +67,7 @@ export function SidebarComponent({children}: {children: React.ReactNode}) {
                 label: "Manu Arora",
                 href: "#",
                 icon: (
-                  <img
+                  <Image
                     src="https://assets.aceternity.com/manu.png"
                     className="h-7 w-7 shrink-0 rounded-full"
                     width={50}

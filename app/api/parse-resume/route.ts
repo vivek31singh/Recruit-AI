@@ -1,5 +1,27 @@
+import { ApiError } from "next/dist/server/api-utils";
+
 export const POST = async (request: Request) => {
+  try {
     const body = await request.json();
-    console.log("resume body", body);
-    return new Response(body);
+
+    console.log("Resume Body:", body);
+
+    // You can now extract fields from `body` such as:
+    // body.body => email content
+    // body.subject => email subject
+    // body.from => sender
+    // body.attachments => array of files [{ filename, mimeType, content (base64) }]
+
+    return new Response(JSON.stringify({ message: "Received resume data", data: body }), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  } catch (error: any) {
+    console.error("Error parsing resume:", error);
+    return new Response(JSON.stringify({ message: "Invalid request", error: error.message }), {
+      status: 400,
+    });
+  }
 };
