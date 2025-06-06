@@ -1,6 +1,3 @@
-import dotenv from 'dotenv';
-dotenv.config();
-
 const dummyJobDescription = `Job Title: Full Stack Developer
 Location: Mohali, Punjab
 Experience Required: 3+ Years
@@ -62,9 +59,6 @@ Monthly team activities and annual retreats.
 How to Apply:
 Send your resume and portfolio to careers@example.com with the subject line: “Full Stack Developer - Mohali”.`;
 
-
-
-
 export const POST = async (request: Request) => {
   try {
     const { body, subject, from, parsedResume } = await request.json();
@@ -82,7 +76,7 @@ export const POST = async (request: Request) => {
       });
     }
 
-      const prompt = `
+    const prompt = `
 You are an intelligent AI recruiter assistant at ocode technologies. You are responsible for screening candidates for a Full Stack Developer role for ocode technologies based in Mohali.
 
 Given the candidate’s ${from} resume and the job description, follow the steps below and respond in a professional tone:
